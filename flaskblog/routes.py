@@ -13,7 +13,14 @@ posts = [{'author': 'Jason Jang',
           'title': 'Draw, Damn it',
           'content': 'An artistic monologue',
           'date_posted': '13th Nov, 2024'
-          }]
+          },
+
+         {'author': 'Leonardo Da Vinci',
+          'title': 'Draw??',
+          'content': 'A monologue',
+          'date_posted': '------'
+          }
+         ]
 
 
 @app.route('/')
