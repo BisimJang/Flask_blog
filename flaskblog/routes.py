@@ -3,33 +3,15 @@ import secrets
 from PIL import Image
 from flaskblog import app, db, bcrypt
 from flask import render_template, url_for, flash, redirect, request
-from flaskblog.forms import LoginForm, RegistrationForm, UpdateAccountForm,PostForm
+from flaskblog.forms import LoginForm, RegistrationForm, UpdateAccountForm, PostForm
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-
-posts = [{'author': 'Jason Jang',
-          'title': 'Aafari',
-          'content': 'The Enfant Terrible',
-          'date_posted': '22nd Nov, 2024'
-          }
-    ,
-         {'author': 'Z',
-          'title': 'Draw, Damn it',
-          'content': 'An artistic monologue',
-          'date_posted': '13th Nov, 2024'
-          },
-
-         {'author': 'Leonardo Da Vinci',
-          'title': 'Draw??',
-          'content': 'A monologue',
-          'date_posted': '------'
-          }
-         ]
 
 
 @app.route('/')
 @app.route('/home')
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts=posts)
 
 
@@ -114,6 +96,17 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
         flash("Post Created", 'success')
+        db.session.add(post)
+        db.session.commit()
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form)
+
+
+@app.route('/post/<int:post_id>')
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template("post.html", title=post.title, post=post)
+
+
