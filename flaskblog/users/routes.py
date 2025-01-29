@@ -1,6 +1,6 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import render_template, url_for, flash, redirect, request, Blueprint, current_app
 from flask_login import login_user, current_user, logout_user, login_required
-from flaskblog import db, bcrypt, app
+from flaskblog import db, bcrypt
 from flaskblog.models import User, Post
 from flaskblog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
@@ -17,7 +17,7 @@ def register():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        with app.app_context():
+        with current_app.app_context():
             db.session.add(user)
             db.session.commit()
         flash('Your      account has been created! You are now able to log in', 'success')
